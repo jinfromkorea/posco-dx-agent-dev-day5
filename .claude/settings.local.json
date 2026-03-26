@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(source /Users/taekkim/auto-lecture/lectures/ai-agent-dev/labs/day3/03-hybrid/my-agent/.venv/bin/activate)"
+    ]
+  }
+}
