@@ -7,9 +7,14 @@ agent.py의 create_base_agent()를 호출하여 에이전트를 생성하고,
 실행: uv run chainlit run app.py
 """
 
+import logging
 import uuid
 
+# OpenTelemetry의 async 컨텍스트 충돌 경고 억제 (기능에 영향 없음)
+logging.getLogger("opentelemetry.context").setLevel(logging.CRITICAL)
+
 import chainlit as cl
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 
 from agent import create_base_agent
 
@@ -32,7 +37,8 @@ async def on_message(message: cl.Message):
     agent = cl.user_session.get("agent")
     thread_id = cl.user_session.get("thread_id")
 
-    config = {"configurable": {"thread_id": thread_id}}
+    langfuse_handler = LangfuseCallbackHandler()
+    config = {"configurable": {"thread_id": thread_id}, "callbacks": [langfuse_handler]}
 
     msg = cl.Message(content="")
     tool_steps: dict[str, cl.Step] = {}
