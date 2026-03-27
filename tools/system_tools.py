@@ -21,7 +21,7 @@ from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_openai import OpenAIEmbeddings
 
 # ─── 데이터 로드 ─────────────────────────────────────────────
-_DATA_PATH = Path(__file__).parent.parent / "data" / "systems.yaml"
+_DATA_PATH = Path(__file__).parent.parent / "mcp_servers" / "data" / "systems.yaml"
 
 with open(_DATA_PATH, encoding="utf-8") as f:
     _systems: list[dict] = yaml.safe_load(f)["systems"]
@@ -54,8 +54,10 @@ def _get_vector_store() -> InMemoryVectorStore:
 
 
 def _format_system_brief(sys: dict) -> str:
+    account_type = sys.get("account_type", "개인계정")
+    account_label = "👤 개인계정" if account_type == "개인계정" else "👥 공용계정"
     return (
-        f"• **{sys['name']}** ({sys.get('category', '')})\n"
+        f"• **{sys['name']}** ({sys.get('category', '')}) [{account_label}]\n"
         f"  - URL: {sys.get('url', 'N/A')} | 담당: {sys.get('owner', 'N/A')}"
     )
 
@@ -244,6 +246,7 @@ _UPDATABLE_FIELDS = {
     "owner": "담당 부서",
     "url": "접속 URL",
     "category": "카테고리",
+    "account_type": "계정 유형",
     "description": "시스템 설명",
     "access_guide": "접속 방법",
     "access_scope": "접근 범위",

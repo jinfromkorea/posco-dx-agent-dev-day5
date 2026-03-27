@@ -4,8 +4,11 @@ users:
   systems:
     업무용:
     - EP
-    - Microsoft Teams
+    - Microsoft Teams (기업형)
     - 이러닝
+    - GitHub Copilot (기업형)
+    - name: Jenkins (그룹사통합망)
+      shared_account: ace-developer
     개인용:
     - name: GitHub
       account: jinfromkorea

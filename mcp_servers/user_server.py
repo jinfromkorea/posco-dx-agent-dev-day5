@@ -18,7 +18,7 @@ from fastmcp import FastMCP
 
 mcp = FastMCP("UserStore")
 
-_DATA_PATH = Path(__file__).parent.parent / "data" / "users.yaml"
+_DATA_PATH = Path(__file__).parent / "data" / "users.yaml"
 
 
 def _read_yaml() -> list[dict]:

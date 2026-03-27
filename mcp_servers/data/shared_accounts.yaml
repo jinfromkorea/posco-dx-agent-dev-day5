@@ -1,0 +1,12 @@
+# 공용 계정 목록 — 민감 정보 포함 가능, .gitignore 추가 권장
+# 키: systems.yaml 의 name 과 일치
+shared_accounts:
+  Jenkins (그룹사통합망):
+    desc: 개발팀 공용 CI/CD 계정
+    contact: 아키텍처팀
+    accounts:
+    - ace-developer
+  Nexus (그룹사통합망):
+    accounts:
+    - anonymous
+    - poscodx-developer
