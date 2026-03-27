@@ -7,6 +7,7 @@ systems:
   onboarding_required: true
   access_scope: 사내
   account_type: 개인계정
+  site_type: 사내
 - name: VDI
   sso: true
   url: https://pvdi.posco.net
@@ -15,6 +16,7 @@ systems:
   onboarding_required: false
   access_scope: 사내·사외
   account_type: 개인계정
+  site_type: 사내
 - name: Microsoft Teams (기업형)
   sso: true
   url: https://teams.microsoft.com
@@ -24,6 +26,7 @@ systems:
   access_mode: 웹, 앱
   access_scope: 사내·사외
   account_type: 개인계정
+  site_type: 사내
 - name: 이러닝
   sso: true
   url: https://edu.company.com
@@ -32,6 +35,7 @@ systems:
   onboarding_required: true
   access_scope: 사내·사외
   account_type: 개인계정
+  site_type: 사내
 - name: GitHub Copilot (기업형)
   sso: true
   url: https://github.com
@@ -40,6 +44,7 @@ systems:
   onboarding_required: false
   access_scope: 사내·사외
   account_type: 개인계정
+  site_type: 사외
 - name: GitLab (그룹사통합망)
   sso: false
   url: https://gitlab.company.com
@@ -48,6 +53,7 @@ systems:
   onboarding_required: false
   access_scope: 사내
   account_type: 개인계정
+  site_type: 사내
 - name: Jira (그룹사통합망)
   sso: false
   url: https://jira.company.com
@@ -56,6 +62,7 @@ systems:
   onboarding_required: false
   access_scope: 사내
   account_type: 개인계정
+  site_type: 사내
 - name: Jenkins (그룹사통합망)
   sso: false
   url: https://jenkins.company.com
@@ -64,6 +71,7 @@ systems:
   onboarding_required: false
   access_scope: 사내
   account_type: 공용계정
+  site_type: 사내
 - name: Nexus (그룹사통합망)
   sso: false
   url: https://nexus.company.com
@@ -72,17 +80,14 @@ systems:
   onboarding_required: false
   access_scope: 사내
   account_type: 공용계정
+  site_type: 사내
 - name: GitHub
   sso: false
   url: https://github.com
   category: 개발
   owner: IT팀
   onboarding_required: false
-  access_scope: 사외
+  access_scope: 사내·사외
   description: 소스 코드 저장소 및 협업 플랫폼
-  access_guide: '1. https://github.com 접속
-
-    2. 개인 계정 또는 회사 계정으로 로그인
-
-    3. 2단계 인증이 설정되어 있으면 인증 완료'
   account_type: 개인계정
+  site_type: 사외

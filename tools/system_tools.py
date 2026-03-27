@@ -56,8 +56,10 @@ def _get_vector_store() -> InMemoryVectorStore:
 def _format_system_brief(sys: dict) -> str:
     account_type = sys.get("account_type", "개인계정")
     account_label = "👤 개인계정" if account_type == "개인계정" else "👥 공용계정"
+    site_type = sys.get("site_type", "사내")
+    site_label = "🏢 사내" if site_type == "사내" else "🌐 사외"
     return (
-        f"• **{sys['name']}** ({sys.get('category', '')}) [{account_label}]\n"
+        f"• **{sys['name']}** ({sys.get('category', '')}) [{account_label}] [{site_label}]\n"
         f"  - URL: {sys.get('url', 'N/A')} | 담당: {sys.get('owner', 'N/A')}"
     )
 
@@ -91,6 +93,28 @@ def search_systems(query: str) -> str:
         sys = next((s for s in _systems if s["name"] == name), None)
         if sys:
             lines.append(_format_system_brief(sys))
+    return "\n".join(lines)
+
+
+@tool
+def filter_by_site_type(site_type: str) -> str:
+    """사내 시스템 또는 사외 사이트로 분류하여 목록을 반환합니다.
+    "사내 시스템만", "외부 사이트 목록" 같은 요청에 사용하세요.
+
+    Args:
+        site_type: '사내' 또는 '사외'
+    """
+    if site_type not in ("사내", "사외"):
+        return "필터 값은 '사내' 또는 '사외'로 입력하세요."
+
+    filtered = [s for s in _systems if s.get("site_type", "사내") == site_type]
+    if not filtered:
+        return f"{site_type} 유형의 시스템이 없습니다."
+
+    label = "포스코DX 사내 시스템" if site_type == "사내" else "외부(사외) 사이트"
+    lines = [f"**{label}** 목록 ({len(filtered)}건):\n"]
+    for sys in filtered:
+        lines.append(_format_system_brief(sys))
     return "\n".join(lines)
 
 
@@ -247,6 +271,7 @@ _UPDATABLE_FIELDS = {
     "url": "접속 URL",
     "category": "카테고리",
     "account_type": "계정 유형",
+    "site_type": "사이트 유형",
     "description": "시스템 설명",
     "access_guide": "접속 방법",
     "access_scope": "접근 범위",
