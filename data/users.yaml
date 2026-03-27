@@ -1,4 +1,3 @@
-# 나중에 DB 로 변경해도 될듯. 
 users:
 - id: fairies
   name: 황유진
@@ -6,5 +5,7 @@ users:
     업무용:
     - EP
     - Microsoft Teams
-    개인용:
     - 이러닝
+    개인용:
+    - name: GitHub
+      account: jinfromkorea
