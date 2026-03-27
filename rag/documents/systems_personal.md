@@ -7,5 +7,13 @@
 
 ## GitHub
 
-- URL: https://github.com
+- https://github.com
+
+## Google
+
+- https://google.com
+
+## Apple
+
+- https://www.apple.com
 
