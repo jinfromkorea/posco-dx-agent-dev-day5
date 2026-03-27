@@ -1,0 +1,59 @@
+# 나중에 Rag 으로 변경하면 좋지 않을까? 
+systems:
+- name: EP
+  sso: true
+  url: https://swpsso.posco.net
+  category: 업무
+  owner: IT팀
+  onboarding_required: true
+  access_scope: 사내
+- name: VDI
+  sso: true
+  url: https://pvdi.posco.net
+  category: 인프라
+  owner: IT팀
+  onboarding_required: false
+  access_scope: 사내·사외
+- name: Microsoft Teams
+  sso: true
+  url: https://teams.microsoft.com
+  category: 협업
+  owner: IT팀
+  onboarding_required: true
+  access_mode: 웹, 앱
+  access_scope: 사내·사외
+- name: 이러닝
+  sso: true
+  url: https://edu.company.com
+  category: 교육
+  owner: 인재개발팀
+  onboarding_required: true
+  access_scope: 사내·사외
+- name: GitHub Copilot
+  sso: true
+  url: https://github.com
+  category: 개발
+  owner: DX추진팀
+  onboarding_required: false
+  access_scope: 사내·사외
+- name: GitLab (그룹사통합망)
+  sso: false
+  url: https://gitlab.company.com
+  category: 개발
+  owner: DX추진팀
+  onboarding_required: false
+  access_scope: 사내
+- name: Jira (그룹사통합망)
+  sso: false
+  url: https://jira.company.com
+  category: 개발
+  owner: DX추진팀
+  onboarding_required: false
+  access_scope: 사내
+- name: Jenkins (그룹사통합망)
+  sso: false
+  url: https://jenkins.company.com
+  category: 개발
+  owner: DX추진팀
+  onboarding_required: false
+  access_scope: 사내

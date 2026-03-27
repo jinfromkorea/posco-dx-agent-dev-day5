@@ -10,6 +10,7 @@ RAG 검색 도구 — documents/ 폴더의 문서를 벡터 스토어에 인덱�
 
 from pathlib import Path
 
+import yaml
 from langchain_core.documents import Document
 from langchain_core.tools import tool
 from langchain_core.vectorstores import InMemoryVectorStore
@@ -19,6 +20,7 @@ from pypdf import PdfReader
 
 # ─── 설정 ────────────────────────────────────────────────────
 DOCUMENTS_DIR = Path(__file__).parent / "documents"
+SYSTEMS_YAML = Path(__file__).parent.parent / "data" / "systems.yaml"
 CHUNK_SIZE = 300
 CHUNK_OVERLAP = 50
 EMBEDDING_MODEL = "text-embedding-3-small"
@@ -48,6 +50,38 @@ _LOADERS = {
 }
 
 
+def _load_systems_yaml() -> list[Document]:
+    """systems.yaml의 각 시스템별 description과 access_guide를 Document로 변환합니다."""
+    if not SYSTEMS_YAML.exists():
+        return []
+
+    with SYSTEMS_YAML.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    docs = []
+    for system in data.get("systems", []):
+        name = system.get("name", "")
+        description = system.get("description", "")
+        access_guide = system.get("access_guide", "")
+
+        content = f"## {name}\n\n"
+        if description:
+            content += f"### 설명\n{description.strip()}\n\n"
+        if access_guide:
+            content += f"### 접속 방법\n{access_guide.strip()}\n"
+
+        docs.append(Document(
+            page_content=content,
+            metadata={
+                "source": "systems.yaml",
+                "system_name": name,
+                "category": system.get("category", ""),
+                "sso": system.get("sso", False),
+            },
+        ))
+    return docs
+
+
 def _build_vector_store() -> InMemoryVectorStore:
     """documents/ 폴더의 .md / .pdf 파일들을 로드하여 벡터 스토어를 구축합니다."""
     global _vector_store
@@ -60,6 +94,12 @@ def _build_vector_store() -> InMemoryVectorStore:
         loader = _LOADERS.get(file.suffix.lower())
         if loader:
             docs.append(loader(file))
+
+    # systems.yaml 로드
+    system_docs = _load_systems_yaml()
+    docs.extend(system_docs)
+    if system_docs:
+        print(f"[RAG] systems.yaml 로드 완료: {len(system_docs)}개 시스템")
 
     if not docs:
         raise FileNotFoundError(
@@ -84,10 +124,11 @@ def _build_vector_store() -> InMemoryVectorStore:
 # ─── 검색 도구 ────────────────────────────────────────────────
 @tool(response_format="content_and_artifact")
 def retrieve(query: str):
-    """지식 베이스에서 관련 문서를 검색합니다. 사내 규정이나 회사 정책에 대한 질문이 들어오면 이 도구를 사용하세요.
+    """지식 베이스에서 관련 문서를 검색합니다.
+    사내 규정, 회사 정책, 사내 시스템 설명, 시스템 접속 방법에 대한 질문이 들어오면 이 도구를 사용하세요.
 
     Args:
-        query: 검색할 내용
+        query: 검색할 내용 (예: "Teams 접속 방법", "VDI 사용법", "EP란 무엇인가")
     """
     vs = _build_vector_store()
     results = vs.similarity_search(query, k=TOP_K)

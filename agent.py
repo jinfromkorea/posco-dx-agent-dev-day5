@@ -50,35 +50,21 @@ async def create_base_agent():
     tools = [*all_tools]
 
     # ─── Level 2B: MCP 서버 도구 ──────────────────────────────
-    # mcp_servers/ 폴더에 FastMCP 서버를 추가하세요.
-    from langchain_mcp_adapters.client import MultiServerMCPClient
+    # user_server를 시작하고 user_tools에 클라이언트를 주입합니다.
+    from fastmcp import Client
+    from tools.user_tools import init_user_client
 
-    mcp_client = MultiServerMCPClient(
-        {
-            "math": {
-                "transport": "stdio",
-                "command": "python",
-                "args": ["mcp_servers/math_server.py"],
-            },
-            # 새 MCP 서버를 여기에 추가하세요:
-            # "my_server": {
-            #     "transport": "stdio",
-            #     "command": "python",
-            #     "args": ["mcp_servers/my_server.py"],
-            # },
-        }
-    )
-    mcp_tools = await mcp_client.get_tools()
-    tools += mcp_tools
+    user_mcp_client = Client("mcp_servers/user_server.py")
+    await user_mcp_client.__aenter__()
+    init_user_client(user_mcp_client)
 
-    # ─── Level 2C: RAG 검색 도구 ──────────────────────────────
-    # rag/documents/ 폴더에 .md/.pdf 파일을 추가하세요.
+    # ─── Level 2C: RAG 검색 도구 ────────────────────────────────
+    # systems.yaml의 description/access_guide + documents/ 문서를 벡터 검색
     from rag.retriever import get_rag_tools
-
     tools += get_rag_tools()
 
     # ─── Level 2D: 스킬 ──────────────────────────────────────
-    # skills/ 폴더에 SKILL.md를 추가하세요.
+    # skills/ 폴더의 SKILL.md를 에이전트에 주입합니다.
     skills = ["./skills/"]
 
     # ─── 에이전트 생성 ────────────────────────────────────────
@@ -90,7 +76,7 @@ async def create_base_agent():
         system_prompt=system_prompt,
         checkpointer=checkpointer,
         # ─── Level 1: AGENTS.md 규칙 주입 ─────────────────────
-        # memory=["./prompts/AGENTS.md"],
+        memory=["./prompts/AGENTS.md"],
         # ─── Level 2D: 스킬 활성화 ────────────────────────────
         skills=skills,
     )
